@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <title>Waar is Waldo? - NES Edition</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waar is Waldo?</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h1>Waar is Waldo?</h1>
+  <main>
+    <h1>Where is Waldo?</h1>
+    <a href="game.html" class="start-button">Start Game</a>
 
-  <a href="game.html">
-    <button class="start-button">▶ START GAME</button>
-  </a>
+    <div class="options">
+      <div class="option easy" data-difficulty="easy">Easy</div>
+      <div class="option medium" data-difficulty="medium">Medium</div>
+      <div class="option hard" data-difficulty="hard">Hard</div>
+    </div>
+  </main>
 
+  <script src="javascript.js"></script>
 </body>
 </html>
