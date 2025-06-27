@@ -205,6 +205,8 @@ if (window.location.pathname.includes("index.html")) {
 
   Ster (gegenereerd via ChatGPT):
     - Prompt: "Kun je in de NES stijl een ster genereren?"
+  Volume (gegenereerd via ChatGPT):
+    - Prompt: "kun je een png genereren van een volume speaker op vol volume en een gemute dan wil ik die gebruiken en dat die veranderd per klik"
 
   Geluidseffecten:
     - game-level-complete-143022.mp3: https://pixabay.com/sound-effects/game-level-complete-143022/
