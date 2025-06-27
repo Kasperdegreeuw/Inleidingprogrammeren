@@ -159,7 +159,7 @@ if (window.location.pathname.includes("game.html")) {
 }
 
 // Selectie van moeilijkheidsgraad op index.html
-if (window.location.pathname.includes("index.html")) {
+if (document.querySelector('.options')) {
   const selectGeluid = new Audio("audio/video-games-select-337214.mp3");
   selectGeluid.volume = 0.2;
 
