@@ -3,8 +3,8 @@
 body {
   font-family: 'Press Start 2P', monospace;
   text-align: center;
-  background-color: #2b1d59; /* NES paarsblauw */
-  color: white;
+  background-color: #fff3f3; /* Lichtroze achtergrond geïnspireerd op Waldo's wit */
+  color: #c00000; /* Donkerrood tekstkleur */
   margin: 0;
   padding: 0;
 }
@@ -12,16 +12,17 @@ body {
 #hud {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: #3b2d78;
-  padding: 10px;
-  border: 2px solid #fff;
-  box-shadow: 4px 4px 0 #0005;
+  align-items: center;
+  gap: 40px;
   font-size: 10px;
-  z-index: 10;
+  font-family: 'Press Start 2P', monospace;
+  background-color: #c00000; /* Donkerrood */
+  color: white;
+  padding: 10px 20px;
+  border: 2px solid #fff;
+  box-shadow: 4px 4px 0 #800000;
+  margin: 20px auto 0 auto;
+  width: fit-content;
 }
 
 #hud > div {
@@ -32,11 +33,11 @@ body {
   width: 600px;
   height: 400px;
   margin: 60px auto 0 auto;
-  border: 4px solid #fff;
+  border: 4px solid #c00000;
   background-image: url('levels/level1.png');
   background-size: cover;
   position: relative;
-  box-shadow: 6px 6px 0 #444;
+  box-shadow: 6px 6px 0 #800000;
 }
 
 .waldo {
@@ -50,24 +51,24 @@ body {
   top: 30%;
   left: 50%;
   transform: translate(-50%, -30%);
-  background-color: #45317c;
-  border: 4px solid #fff;
+  background-color: #fff3f3;
+  border: 4px solid #c00000;
   padding: 20px;
   text-align: center;
   z-index: 999;
-  box-shadow: 8px 8px 0 #222;
+  box-shadow: 8px 8px 0 #800000;
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
-  color: white;
+  color: #c00000;
   width: 300px;
 }
 
 #popup button {
   font-family: 'Press Start 2P', monospace;
   font-size: 10px;
-  background-color: #000;
-  color: #fff;
-  border: 2px solid #fff;
+  background-color: #c00000;
+  color: white;
+  border: 2px solid white;
   padding: 5px 10px;
   cursor: pointer;
   margin-top: 10px;
@@ -78,13 +79,14 @@ body {
 }
 
 .start-button {
-  background-color: #5e44a3;
-  color: #fff;
-  border: 4px solid #fff;
+  background-color: #c00000;
+  color: white;
+  border: 4px solid white;
   padding: 16px 32px;
-  font-size: 10px;
+  font-size: 12px;
+  font-family: 'Press Start 2P', monospace;
   cursor: pointer;
-  box-shadow: 6px 6px 0 #444;
+  box-shadow: 6px 6px 0 #800000;
   transition: all 0.1s ease-in-out;
   text-decoration: none;
   display: inline-block;
@@ -92,15 +94,9 @@ body {
 }
 
 .start-button:hover {
-  background-color: #6c52bc;
-  box-shadow: 3px 3px 0 #222;
+  background-color: #a00000;
+  box-shadow: 3px 3px 0 #600000;
   transform: translate(2px, 2px);
-}
-
-.credits {
-  margin-top: 50px;
-  font-size: 8px;
-  color: #aaa;
 }
 
 .sterren-container {
@@ -115,9 +111,11 @@ body {
   image-rendering: pixelated;
 }
 
-/* Mute knop styling */
+/* Mute knop background */
 img[src*="volume"] {
-  background-color: #ffffffcc;
-  border-radius: 4px;
-  padding: 2px;
-}
+    background-color: #ffffffcc;
+    border: 2px solid #c00000; /* zelfde kleur als tekst */
+    border-radius: 4px;
+    padding: 2px;
+  }
+  

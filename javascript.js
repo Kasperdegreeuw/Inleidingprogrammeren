@@ -44,7 +44,7 @@ waldo.addEventListener("click", () => {
   scoreEl.textContent = `Score: ${score}`;
 
   const popupText = document.getElementById("popupText");
-  popupText.innerHTML = `🎉 Je hebt Waldo gevonden!<div class="sterren-container"></div>`;
+  popupText.innerHTML = `Je hebt Waldo gevonden!<div class="sterren-container"></div>`;
 
   const sterContainer = popupText.querySelector(".sterren-container");
   for (let i = 0; i < punten; i++) {
@@ -66,12 +66,14 @@ function startTimer() {
     tijdOver--;
     timerEl.textContent = `Tijd: ${tijdOver}`;
     if (tijdOver <= 0) {
-      clearInterval(teller);
-      popupType = "level";
-      const popupText = document.getElementById("popupText");
-      popupText.textContent = "⏱️ Tijd is op!";
-      document.getElementById("popup").classList.remove("hidden");
-    }
+        clearInterval(teller);
+        popupType = "restart";
+        document.getElementById("popupText").textContent = "Game Over! Klik om terug te keren naar het startscherm.";
+        document.getElementById("popup").classList.remove("hidden");
+      }
+      
+      
+    
   }, 1000);
 }
 
@@ -100,12 +102,16 @@ function closePopup() {
       return;
     }
 
-    document.getElementById("popupText").textContent = `🎮 Level ${huidigLevel} begint!`;
+    document.getElementById("popupText").textContent = `Level ${huidigLevel} begint!`;
     document.getElementById("popup").classList.remove("hidden");
   } else if (popupType === "level") {
     nieuwLevel(huidigLevel);
     popupType = "";
   }
+  else if (popupType === "restart") {
+    window.location.href = "index.html"; // Zorg ervoor als de tijd voorbij is dat je terug naar start gaat
+  }
+  
 }
 
 window.onload = () => nieuwLevel(huidigLevel);
@@ -115,6 +121,14 @@ window.onload = () => nieuwLevel(huidigLevel);
 
   Achtergrond 1: https://www.spriters-resource.com/fullview/221982/
   Achtergrond 2: https://www.spriters-resource.com/fullview/221983/
+  Prompt voor genereren ster (kon online niet een goeie vinden) : kun je in de nes stijl een ster genereren
+
+  Sounds:
+    game-level-complete-143022.mp3 : https://pixabay.com/sound-effects/game-start-6104/
+    game-over-arcade-6435.mp3 : https://pixabay.com/sound-effects/game-over-arcade-6435/
+    8-bit-video-game-lose-sound-version-1-145828.mp3 : https://pixabay.com/sound-effects/8-bit-video-game-lose-sound-version-1-145828/
+    level-win-6416.mp3 : https://pixabay.com/sound-effects/level-win-6416/
+    game-level-complete-143022.mp3 : https://pixabay.com/sound-effects/game-level-complete-143022/
 
   
 */
