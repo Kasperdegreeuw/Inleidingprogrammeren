@@ -1,89 +1,103 @@
-// Huidige staat van de game
+// Alle belangrijke spelvariabelen
 let huidigLevel = 1;
 let score = 0;
 let tijdOver;
 let teller;
 let popupType = "waldo";
 let isMuted = false;
-let moeilijkheid = "medium";
+let moeilijkheid = "medium"; // standaard
 
-// Maximaal aantal levels
 const maxLevel = 5;
-
-// DOM-elementen ophalen
 const game = document.getElementById("game");
 const scoreEl = document.getElementById("score");
 const timerEl = document.getElementById("timer");
 
-// Instellingen voor elke moeilijkheidsgraad
+// Instellingen voor moeilijkheidsgraad
 const instellingen = {
   easy:   { tijd: 40, schaal: 1.0 },
   medium: { tijd: 30, schaal: 0.7 },
   hard:   { tijd: 20, schaal: 0.5 }
 };
 
-// Achtergrondmuziek per pagina laden
-const achtergrondMuziek = new Audio(
-  window.location.pathname.includes("game.html")
-    ? "audio/Where's Waldo (NES) Music - World Map.mp3"
-    : "audio/Where's Waldo (NES) Music - Title Theme.mp3"
-);
+// Kies de juiste muziek op basis van de pagina
+let achtergrondMuziek;
+if (window.location.pathname.includes("game.html")) {
+  achtergrondMuziek = new Audio("audio/Where's Waldo (NES) Music - World Map.mp3");
+} else {
+  achtergrondMuziek = new Audio("audio/Where's Waldo (NES) Music - Title Theme.mp3");
+}
 achtergrondMuziek.loop = true;
 achtergrondMuziek.volume = 0.2;
 achtergrondMuziek.play();
 
-// Geluidseffecten instellen
+// Speelgeluiden
 const klikGeluid = new Audio("audio/game-level-complete-143022.mp3");
 klikGeluid.volume = 0.4;
 
 const gameOverGeluid = new Audio("audio/Where's Waldo (NES) Music - Game Over.mp3");
 gameOverGeluid.volume = 0.4;
 
-// Alleen uitvoeren op de spelpagina
+// Alleen logica voor game.html
 if (window.location.pathname.includes("game.html")) {
-  // Volume/mute knop maken
   const muteButton = document.createElement("img");
   muteButton.src = "images/volume-on.png";
   muteButton.classList.add("mute-knop");
   document.getElementById("hud").appendChild(muteButton);
 
-  // Toggle geluid aan/uit
+  // Mute functie
   muteButton.addEventListener("click", () => {
     isMuted = !isMuted;
-    const volume = isMuted ? 0 : 0.4;
+    let volume;
+    if (isMuted) {
+      volume = 0;
+    } else {
+      volume = 0.4;
+    }
+
     achtergrondMuziek.volume = volume;
     klikGeluid.volume = volume;
     gameOverGeluid.volume = volume;
-    muteButton.src = isMuted ? "images/volume-mute.png" : "images/volume-on.png";
+    if (isMuted) {
+      muteButton.src = "images/volume-mute.png";
+    } else {
+      muteButton.src = "images/volume-on.png";
+    }
   });
 
-  // Moeilijkheidsgraad uit localStorage ophalen
-  // Bron: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+  // Moeilijkheid ophalen uit localStorage
   const opgeslagenMoeilijkheid = localStorage.getItem("moeilijkheid");
-  if (opgeslagenMoeilijkheid && instellingen[opgeslagenMoeilijkheid]) {
-    moeilijkheid = opgeslagenMoeilijkheid;
+  if (opgeslagenMoeilijkheid !== null) {
+    if (instellingen[opgeslagenMoeilijkheid]) {
+      moeilijkheid = opgeslagenMoeilijkheid;
+    }
   }
 
-  // Waldo toevoegen aan het speelveld
+  // Waldo toevoegen
   const waldo = document.createElement("img");
   waldo.src = "images/waldo.png";
   waldo.classList.add("waldo");
   game.appendChild(waldo);
 
-  // Klik op Waldo = punten verdienen
+  // Als speler Waldo vindt
   waldo.addEventListener("click", () => {
     if (!isMuted) klikGeluid.play();
 
-    // Puntensysteem: gebaseerd op percentage resterende tijd
-    let punten = tijdOver / instellingen[moeilijkheid].tijd;
-    punten = punten >= 0.66 ? 3 : punten >= 0.33 ? 2 : 1;
+    let puntenVerhouding = tijdOver / instellingen[moeilijkheid].tijd;
+    let punten;
+
+    if (puntenVerhouding >= 0.66) {
+      punten = 3;
+    } else if (puntenVerhouding >= 0.33) {
+      punten = 2;
+    } else {
+      punten = 1;
+    }
 
     score += punten;
-    scoreEl.textContent = `Score: ${score}`;
+    scoreEl.textContent = "Score: " + score;
 
-    // Toon pop-up met sterren
     const popupText = document.getElementById("popupText");
-    popupText.innerHTML = `Je hebt Waldo gevonden!<div class="sterren-container"></div>`;
+    popupText.innerHTML = "Je hebt Waldo gevonden!<div class=\"sterren-container\"></div>";
 
     const sterContainer = popupText.querySelector(".sterren-container");
     for (let i = 0; i < punten; i++) {
@@ -98,43 +112,53 @@ if (window.location.pathname.includes("game.html")) {
     clearInterval(teller);
   });
 
-  // Start de countdown
+  // Start de timer
   function startTimer() {
     clearInterval(teller);
     teller = setInterval(() => {
       tijdOver--;
-      timerEl.textContent = `Tijd: ${tijdOver}`;
+      timerEl.textContent = "Tijd: " + tijdOver;
       if (tijdOver <= 0) {
         clearInterval(teller);
         popupType = "restart";
+
         if (!isMuted) {
           achtergrondMuziek.pause();
           gameOverGeluid.play();
         }
+
         document.getElementById("popupText").textContent = "Game Over!";
         document.getElementById("popup").classList.remove("hidden");
       }
     }, 1000);
   }
 
-  // Start een nieuw level
+  // Laad een nieuw level
   function nieuwLevel(nr) {
     const inst = instellingen[moeilijkheid];
-    tijdOver = Math.max(inst.tijd - (nr - 1) * 2, 10);
-    timerEl.textContent = `Tijd: ${tijdOver}`;
-    document.getElementById("level").textContent = `Level: ${nr}`;
-    game.style.backgroundImage = `url('levels/level${nr}.png')`;
+    tijdOver = inst.tijd - (nr - 1) * 2;
+    if (tijdOver < 10) {
+      tijdOver = 10;
+    }
 
-    const schaal = Math.max(inst.schaal - (nr - 1) * 0.1, 0.3);
-    waldo.style.left = `${Math.random() * (game.clientWidth - 40)}px`;
-    waldo.style.top = `${Math.random() * (game.clientHeight - 40)}px`;
-    waldo.style.transform = `scale(${schaal})`;
+    timerEl.textContent = "Tijd: " + tijdOver;
+    document.getElementById("level").textContent = "Level: " + nr;
+    game.style.backgroundImage = "url('levels/level" + nr + ".png')";
+
+    let schaal = inst.schaal - (nr - 1) * 0.1;
+    if (schaal < 0.3) {
+      schaal = 0.3;
+    }
+
+    waldo.style.left = Math.random() * (game.clientWidth - 40) + "px";
+    waldo.style.top = Math.random() * (game.clientHeight - 40) + "px";
+    waldo.style.transform = "scale(" + schaal + ")";
 
     if (!isMuted) achtergrondMuziek.play();
     startTimer();
   }
 
-  // Pop-up sluiten en bepalen wat te doen
+  // Popup sluiten en actie bepalen
   function closePopup() {
     document.getElementById("popup").classList.add("hidden");
 
@@ -144,7 +168,7 @@ if (window.location.pathname.includes("game.html")) {
         window.location.href = "index.html";
       } else {
         popupType = "level";
-        document.getElementById("popupText").textContent = `Level ${huidigLevel} begint!`;
+        document.getElementById("popupText").textContent = "Level " + huidigLevel + " begint!";
         document.getElementById("popup").classList.remove("hidden");
       }
     } else if (popupType === "level") {
@@ -154,25 +178,34 @@ if (window.location.pathname.includes("game.html")) {
     }
   }
 
-  // Start eerste level bij laden
-  window.onload = () => nieuwLevel(huidigLevel);
+  window.onload = function () {
+    nieuwLevel(huidigLevel);
+  };
 }
 
-// Selectie van moeilijkheidsgraad op index.html
-if (document.querySelector('.options')) {
+// Moeilijkheidsgraad selecteren op index.html
+if (window.location.pathname.includes("index.html")) {
   const selectGeluid = new Audio("audio/video-games-select-337214.mp3");
   selectGeluid.volume = 0.2;
 
   const opties = document.querySelectorAll(".option");
 
-  // data-* attributes: manier om extra info op te slaan in HTML-elementen
-  // Bron: https://developer.mozilla.org/en-US/docs/Web/HTML/How_to/Use_data_attributes
-  opties.forEach(optie => {
-    optie.addEventListener("click", () => {
-      opties.forEach(o => o.classList.remove("selected"));
+  opties.forEach(function (optie) {
+    optie.addEventListener("click", function () {
+      opties.forEach(function (o) {
+        o.classList.remove("selected");
+      });
+
       optie.classList.add("selected");
 
-      moeilijkheid = optie.dataset.difficulty || "medium";
+      if (optie.classList.contains("easy")) {
+        moeilijkheid = "easy";
+      } else if (optie.classList.contains("hard")) {
+        moeilijkheid = "hard";
+      } else {
+        moeilijkheid = "medium";
+      }
+
       localStorage.setItem("moeilijkheid", moeilijkheid);
 
       if (!isMuted) {
@@ -182,6 +215,7 @@ if (document.querySelector('.options')) {
     });
   });
 }
+
 
 /*
   Bronvermelding assets en geluiden:
@@ -217,3 +251,5 @@ if (document.querySelector('.options')) {
     - Game Over Theme: https://www.youtube.com/watch?v=7k1u8E8-s2w
     - Title Theme: https://www.youtube.com/watch?v=3VQZuWNf5OA
 */
+
+
